@@ -44,16 +44,26 @@ namespace MarcosSimulaciónRenta
             {
                 if (_CancelaciónContrato)
                 {
-                    while (_PeriodoFallo >= _PeriodoCancelación)
+                    if (_PeriodoCancelación == 1)
                     {
-                        _PeriodoFallo = RandomSingleton.Next(1, periodos);
+                        _PeriodoFallo = 1;
+                        _PeriodoCancelación = 2;
+                    }
+                    else
+                    {
+                        _PeriodoFallo = _PeriodoCancelación - 1;
                     }
                 }
                 if (_NoPago)
                 {
-                    while (_PeriodoFallo >= _PeriodoNoPago)
+                    if (_PeriodoNoPago == 1)
                     {
-                        _PeriodoFallo = RandomSingleton.Next(1, periodos);
+                        _PeriodoFallo = 1;
+                        _PeriodoNoPago = 2;
+                    }
+                    else
+                    {
+                        _PeriodoFallo = _PeriodoNoPago - 1;
                     }
                 }
             }
