@@ -19,25 +19,25 @@ namespace MarcosSimulaciónRenta
         public bool _NoPago = false;
         public int _PeriodoNoPago = 0;
         
-        public Renta(int periodos, double tazaDeFalloEquipo, double tazaCancelación, double tazaNoPago)
+        public Renta(int periodos, double tazaDeFalloEquipo, double tazaCancelación, double tazaNoPago, Random rand)
         {
-            if (RandomSingleton.NextDouble() < tazaDeFalloEquipo)
+            if (rand.NextDouble() < tazaDeFalloEquipo)
             {
                 _FalloEquipo = true;
-                _PeriodoFallo = RandomSingleton.Next(1, periodos);
+                _PeriodoFallo = rand.Next(1, periodos);
             }
             /* Esto evidentemente no es cierto, es solo para empezar */
-            if (RandomSingleton.NextDouble() < tazaCancelación)
+            if (rand.NextDouble() < tazaCancelación)
             {
                 _CancelaciónContrato = true;
-                _PeriodoCancelación = RandomSingleton.Next(1, periodos);
+                _PeriodoCancelación = rand.Next(1, periodos);
             }
             else
             {
-                if (RandomSingleton.NextDouble() < tazaNoPago)
+                if (rand.NextDouble() < tazaNoPago)
                 {
                     _NoPago = true;
-                    _PeriodoNoPago = RandomSingleton.Next(1, periodos);
+                    _PeriodoNoPago = rand.Next(1, periodos);
                 }
             }
             if (_FalloEquipo)

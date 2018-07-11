@@ -42,11 +42,12 @@ namespace MarcosSimulaciónRenta
             double CostosFallasEquipo = 0;
             double IngresosTotales = 0;
             Renta[] rentas = new Renta[NumeroDeRentas];
+            Random rand = new Random();
 
             CostoInicialEquipo = NumeroDeRentas * costoDistribuidor;
             for (int i = 0; i < NumeroDeRentas; i++)
             {
-                rentas[i] = new Renta(periodosDelPlazo, TazaFalloEquipo, TazaCancelación, TazaNoPago);
+                rentas[i] = new Renta(periodosDelPlazo, TazaFalloEquipo, TazaCancelación, TazaNoPago, rand);
                 if (rentas[i]._FalloEquipo) CuantasFallas++;
                 if (rentas[i]._CancelaciónContrato)
                 {
