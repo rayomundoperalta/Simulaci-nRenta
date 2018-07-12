@@ -14,7 +14,7 @@ namespace MarcosSimulaciónRenta
         public double MeanCancelaciones;
         public double MeanNoPagos;
         
-        public Simulación[] simulaciones;
+        Simulación simulacion = new Simulación();
         TablaAmortización TA;
         int NumeroDeRentas;
         double CostoDistribuidor;
@@ -29,7 +29,6 @@ namespace MarcosSimulaciónRenta
             double TazaFalloEquipo, double TazaCancelación, double TazaNoPago, double tazaInteresAnual, int periodosAnuales, double costoPublico)
         {
             this.NumeroDeSimulaciones = NumeroDeSimulaciones;
-            simulaciones = new Simulación[NumeroDeSimulaciones];
             this.NumeroDeRentas = NumeroDeRentas;
             this.CostoDistribuidor = CostoDistribuidor;
             this.periodosDelPlazo = periodosDelPlazo;
@@ -43,13 +42,13 @@ namespace MarcosSimulaciónRenta
         {
             for (int s = 0; s < (NumeroDeSimulaciones); s++)
             {
-                simulaciones[s] = new Simulación(TA, NumeroDeRentas, CostoDistribuidor, periodosDelPlazo,
+                simulacion.EjecutaSimulación(TA, NumeroDeRentas, CostoDistribuidor, periodosDelPlazo,
                     TazaFalloEquipo, TazaCancelación, TazaNoPago);
-                MeanIngresosTotales += simulaciones[s].Result.IngresosTotales;
-                MeanCostosFallasEquipo += simulaciones[s].Result.CostosFallasEquipo;
-                MeanFallasTotales += simulaciones[s].Result.FallasTotales;
-                MeanCancelaciones += simulaciones[s].Result.CuantasCancelaciones;
-                MeanNoPagos += simulaciones[s].Result.CuantosNoPagos;
+                MeanIngresosTotales += simulacion.Result.IngresosTotales;
+                MeanCostosFallasEquipo += simulacion.Result.CostosFallasEquipo;
+                MeanFallasTotales += simulacion.Result.FallasTotales;
+                MeanCancelaciones += simulacion.Result.CuantasCancelaciones;
+                MeanNoPagos += simulacion.Result.CuantosNoPagos;
             }
         }
     }

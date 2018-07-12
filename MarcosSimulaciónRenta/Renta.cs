@@ -19,7 +19,7 @@ namespace MarcosSimulaciónRenta
         public bool _NoPago = false;
         public int _PeriodoNoPago = 0;
         
-        public Renta(int periodos, double tazaDeFalloEquipo, double tazaCancelación, double tazaNoPago, Random rand)
+        public void SimulaRenta(int periodos, double tazaDeFalloEquipo, double tazaCancelación, double tazaNoPago, Random rand)
         {
             if (rand.NextDouble() < tazaDeFalloEquipo)
             {

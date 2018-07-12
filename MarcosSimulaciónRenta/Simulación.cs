@@ -32,7 +32,7 @@ namespace MarcosSimulaciónRenta
     {
         public ResultadoSimulación Result;
 
-        public Simulación (TablaAmortización TA, int NumeroDeRentas, double costoDistribuidor, int periodosDelPlazo, double TazaFalloEquipo, double TazaCancelación, double TazaNoPago)
+        public void  EjecutaSimulación (TablaAmortización TA, int NumeroDeRentas, double costoDistribuidor, int periodosDelPlazo, double TazaFalloEquipo, double TazaCancelación, double TazaNoPago)
         {
             int CuantasFallas = 0;
             int CuantasCancelaciones = 0;
@@ -41,25 +41,25 @@ namespace MarcosSimulaciónRenta
             double CostoInicialEquipo = 0;
             double CostosFallasEquipo = 0;
             double IngresosTotales = 0;
-            Renta[] rentas = new Renta[NumeroDeRentas];
+            Renta renta = new Renta();
             Random rand = new Random();
 
             CostoInicialEquipo = NumeroDeRentas * costoDistribuidor;
             for (int i = 0; i < NumeroDeRentas; i++)
             {
-                rentas[i] = new Renta(periodosDelPlazo, TazaFalloEquipo, TazaCancelación, TazaNoPago, rand);
-                if (rentas[i]._FalloEquipo) CuantasFallas++;
-                if (rentas[i]._CancelaciónContrato)
+                renta.SimulaRenta(periodosDelPlazo, TazaFalloEquipo, TazaCancelación, TazaNoPago, rand);
+                if (renta._FalloEquipo) CuantasFallas++;
+                if (renta._CancelaciónContrato)
                 {
                     CuantasCancelaciones++;
-                    IngresosTotales += rentas[i]._PeriodoCancelación * TA.PagoPeriodico();
+                    IngresosTotales += renta._PeriodoCancelación * TA.PagoPeriodico();
                 }
                 else
                 {
-                    if (rentas[i]._NoPago)
+                    if (renta._NoPago)
                     {
                         CuantosNoPagos++;
-                        IngresosTotales += (rentas[i]._PeriodoNoPago - 1) * TA.PagoPeriodico();
+                        IngresosTotales += (renta._PeriodoNoPago - 1) * TA.PagoPeriodico();
                     }
                     else
                     {
@@ -68,7 +68,13 @@ namespace MarcosSimulaciónRenta
                 }
             }
             CostosFallasEquipo = CuantasFallas * costoDistribuidor;
-            Result = new ResultadoSimulación(TA.PagoPeriodico(), CostoInicialEquipo, IngresosTotales, CostosFallasEquipo, CuantasFallas, CuantasCancelaciones, CuantosNoPagos);
+            Result.PagoMensual = TA.PagoPeriodico();
+            Result.CostoInicialEquipo = CostoInicialEquipo;
+            Result.IngresosTotales = IngresosTotales;
+            Result.CostosFallasEquipo = CostosFallasEquipo;
+            Result.FallasTotales = CuantasFallas;
+            Result.CuantasCancelaciones = CuantasCancelaciones;
+            Result.CuantosNoPagos = CuantosNoPagos;
         }
     }
 }
