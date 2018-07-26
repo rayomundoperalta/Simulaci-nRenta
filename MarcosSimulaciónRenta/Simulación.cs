@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,7 +34,7 @@ namespace MarcosSimulaciónRenta
     {
         public ResultadoSimulación Result;
 
-        public void  EjecutaSimulación (TablaAmortización TA, int NumeroDeRentas, double costoDistribuidor, int periodosDelPlazo, double TazaFalloEquipo, double TazaCancelación, double TazaNoPago)
+        public void  EjecutaSimulación (BinaryWriter file, TablaAmortización TA, int NumeroDeRentas, double costoDistribuidor, int periodosDelPlazo, double TazaFalloEquipo, double TazaCancelación, double TazaNoPago)
         {
             int CuantasFallas = 0;
             int CuantasCancelaciones = 0;
@@ -44,37 +46,62 @@ namespace MarcosSimulaciónRenta
             Renta renta = new Renta();
             Random rand = new Random();
 
-            CostoInicialEquipo = NumeroDeRentas * costoDistribuidor;
+            CostoInicialEquipo = costoDistribuidor;
+            RentasData datos = new RentasData();
+
             for (int i = 0; i < NumeroDeRentas; i++)
             {
                 renta.SimulaRenta(periodosDelPlazo, TazaFalloEquipo, TazaCancelación, TazaNoPago, rand);
+                datos.PagoPeriodico = TA.PagoPeriodico();
+                datos.CostoInicialEquipo = CostoInicialEquipo;
+                datos.FalloEquipo = renta._FalloEquipo;
+                datos.CancelaciónContrato = renta._CancelaciónContrato;
+                datos.PeriodoCancelación = renta._PeriodoCancelación;
+                datos.NoPago = renta._NoPago;
+                datos.PeriodoNoPago = renta._PeriodoNoPago;
+                datos.Plazos = periodosDelPlazo;
                 if (renta._FalloEquipo) CuantasFallas++;
+                double PagoTotal = 0;
                 if (renta._CancelaciónContrato)
                 {
                     CuantasCancelaciones++;
-                    IngresosTotales += renta._PeriodoCancelación * TA.PagoPeriodico();
+                    PagoTotal = renta._PeriodoCancelación * TA.PagoPeriodico();
+                    IngresosTotales += PagoTotal;
+                    datos.PagoTotal = PagoTotal;
+                    //Console.WriteLine(PagoTotal);
                 }
                 else
                 {
                     if (renta._NoPago)
                     {
                         CuantosNoPagos++;
-                        IngresosTotales += (renta._PeriodoNoPago - 1) * TA.PagoPeriodico();
+                        PagoTotal = (renta._PeriodoNoPago - 1) * TA.PagoPeriodico();
+                        IngresosTotales += PagoTotal;
+                        datos.PagoTotal = PagoTotal;
+                        //Console.WriteLine(PagoTotal);
                     }
                     else
                     {
-                        IngresosTotales += periodosDelPlazo * TA.PagoPeriodico();
+                        PagoTotal = periodosDelPlazo * TA.PagoPeriodico();
+                        IngresosTotales += PagoTotal;
+                        datos.PagoTotal = PagoTotal;
+                        //Console.WriteLine(PagoTotal);
                     }
                 }
+                byte[] byteArr = datos.Serialize();
+                Int32 sizeOfarrByte = byteArr.Length;
+                file.Write(sizeOfarrByte);
+                file.Write(byteArr);
             }
             CostosFallasEquipo = CuantasFallas * costoDistribuidor;
             Result.PagoMensual = TA.PagoPeriodico();
-            Result.CostoInicialEquipo = CostoInicialEquipo;
+            Result.CostoInicialEquipo = costoDistribuidor * NumeroDeRentas;
             Result.IngresosTotales = IngresosTotales;
             Result.CostosFallasEquipo = CostosFallasEquipo;
             Result.FallasTotales = CuantasFallas;
             Result.CuantasCancelaciones = CuantasCancelaciones;
             Result.CuantosNoPagos = CuantosNoPagos;
+            
         }
     }
 }
