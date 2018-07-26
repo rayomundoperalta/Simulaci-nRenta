@@ -58,7 +58,7 @@ namespace MarcosSimulaciónRenta
                     TazaCancelación = Convert.ToDouble(numbers[7]);
                     TazaNoPago = Convert.ToDouble(numbers[8]);
                     NumeroThreads = int.Parse(numbers[9]);
-                    if (NumeroThreads < 8)
+                    if (NumeroThreads < 9)
                     {
                         file.Write(costoPublico + ", " + costoDistribuidor + ", " + periodosAnuales + ", " + periodosDelPlazo + ", " + tazaInteresAnual + ", " + NumeroDeRentas + ", " + TazaFalloEquipo + ", " + TazaCancelación + ", " + TazaNoPago + ", " + NumeroThreads + ", ");
                         int repeticiones = 100;   // veces que se simula una renta
